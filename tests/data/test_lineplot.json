@@ -1,0 +1,29 @@
+{
+	"reference": "11206112-ZWS",
+	"contact": "info@deltares.nl",
+	"appendices": [{
+		"paragraphs": [{
+			"header": "This is the Header",
+			"body": "this is the body"
+		}],
+		"graphs": [{
+			"label": "Maaseikje",
+			"x": [1, 2, 3, 4],
+			"y": [10, 12, 13, 17],
+			"xlabel": "Discharge",
+			"ylabel": "Waterlevel"
+		}, {
+			"label": "Rijnbeukkie",
+			"x": [1, 2, 3, 4],
+			"y": [3, 14, 15, 78],
+			"xlabel": "Discharge",
+			"ylabel": "Waterlevel"
+		}, {
+			"label": "IJsselpopulierke",
+			"x": [1, 2, 3, 4],
+			"y": [10, 19, 3, 7],
+			"xlabel": "Discharge",
+			"ylabel": "Waterlevel"
+		}]
+	}]
+}

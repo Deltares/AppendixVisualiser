@@ -1,7 +1,7 @@
 <template>
   <b-col>
     <b-dropdown text="Station" class="m-md-2" variant="outline-primary">
-      <b-dropdown-item v-for="(item, key) in reportData" :key="key" @click="changeData(item)">
+      <b-dropdown-item v-for="(item, key) in parentData" :key="key" @click="changeData(item)">
         {{ item.label }}
       </b-dropdown-item>
     </b-dropdown>
@@ -21,6 +21,9 @@ export default {
   components: {
     Plotly
   },
+  props: {
+    parentData: Array,
+  },
   data: () => ({
       data: [{x: [1, 2, 3, 4],
               y: [0, 0, 0, 0],
@@ -33,26 +36,7 @@ export default {
                        font : {family: 'helvetica, arial'}}
                        },
       count: 0,
-      fields: [],
-      reportData: [{
-            label: 'Maaseikje',
-            x: [1, 2, 3, 4],
-            y: [10, 12, 13, 17],
-            xlabel: 'Discharge',
-            ylabel: 'Waterlevel'
-          }, {
-            label: "Rijnbeukkie",
-            x: [1, 2, 3, 4],
-            y: [3, 14, 15, 78],
-            xlabel: 'Discharge',
-            ylabel: 'Waterlevel'
-          }, {
-            label: "IJsselpopulierke",
-            x: [1, 2, 3, 4],
-            y: [10, 19, 3, 7],
-            xlabel: 'Discharge',
-            ylabel: 'Waterlevel'
-      }],
+      fields: []
     }),
   methods: {
     changeData(item) {

@@ -27,3 +27,5 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+DropFile forked from https://github.com/fabiofranchino/vue-drop-txt-and-read/blob/master/src/components/DropText.vue
