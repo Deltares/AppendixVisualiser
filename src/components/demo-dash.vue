@@ -13,13 +13,12 @@
       <div class="row justify-content-center">
         <div>
           <h2>{{paragraphHeader}}</h2>
-          <p class="textRow">
-            {{paragraphText}}
-          </p>
+          <p class="textRow" v-html="paragraphText"></p>
         </div>
       </div>
-      <b-row class="text-center justify-content-center">
+      <b-row class="text-center justify-content-center borderclass2">
         <!--Number of Graphs:{{numberOfGraphs}}-->
+        <!--
         <div>
           Set number of graphs
             <b-form-group type="primary">
@@ -32,13 +31,25 @@
                 @change.native="setNumberOfGraphs('Graph')"
               ></b-form-radio-group>
             </b-form-group>
-          </div>
+          </div>-->
       </b-row>
-    <b-row sm=3>
-    <!--<Graph :parentData="reportData"/>-->
-    <div id="component-graph" v-for="field in fields" v-bind:is="field.type" :key="field.id" :parentData="reportData">
-    </div>
-  </b-row>
+      <b-container fluid>
+      <b-row class="borderclass2">
+        <b-col id="component-graph" 
+               v-for="field in fields" 
+               v-on:graphToParent="onGraphDelete"
+               v-bind:is="field.type" 
+               :key="field.id" 
+               :parentData="reportData"
+               :parentID="field.id"
+               class='borderclass d-flex justify-content-center'></b-col>
+
+      </b-row>
+      <b-row class="borderclass2 d-flex justify-content-center">
+        <button v-on:click="addGraph">Add graph</button>
+      </b-row>
+    </b-container>
+
 </div>
   </div>
 </template>
@@ -47,11 +58,12 @@
 //import Vue from 'vue'
 import Graph from '../components/Graph';
 import DropFile from '../components/DropFile'  
+import Multiselect from 'vue-multiselect'
 
 export default {
   name: 'demoDash',
   components: {
-    Graph, DropFile
+    Graph, DropFile, Multiselect
   },
   data: () => ({
     NoFile: true,
@@ -60,7 +72,10 @@ export default {
     options: [{text: '0', value: 0},
               {text: '1', value: 1},
               {text: '2', value: 2},
-              {text: '3', value: 3}],
+              {text: '3', value: 3},
+              {text: '4', value: 4},
+              {text: '5', value: 5},
+              {text: '6', value: 6}],
     numberOfGraphs: 0,
     count: 0,
     fields: [],
@@ -90,7 +105,18 @@ export default {
         this.paragraphHeader = data.appendices[0].paragraphs[0].header
         this.paragraphText = data.appendices[0].paragraphs[0].body
         this.reportData = data.appendices[0].graphs
-      }
+      },
+      onGraphDelete (data) {
+        for (var i=0 ; i < this.fields.length; i++){
+          console.log("popping graph "+data)
+          if (this.fields[i].id==data){this.fields.splice(i, 1)}
+        }
+      },
+      addGraph(){
+        this.fields.push({
+        'type': "Graph",
+        id: this.count++})
+    }
     }
 }
 
@@ -99,6 +125,13 @@ export default {
 </script>
 
 <style>
+
+.borderclass{
+  border: 0px solid red;
+}
+.borderclass2{
+  border: 0px solid blue;
+}
 
 h2 {
   color: #0927a2ff;
@@ -110,7 +143,7 @@ h2 {
 }
 
 .textRow {
-  max-width: 400px;
+  max-width: 600px;
 }
 
 .header {
@@ -123,9 +156,6 @@ h2 {
   box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.75);
 }
 
-.graphcontainer{
-  border: 2px solid red;
-}
 
 .author {
   background-color: white;

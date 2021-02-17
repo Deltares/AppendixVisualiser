@@ -1,27 +1,31 @@
 <template>
   <b-col>
-    <b-dropdown text="Station" class="m-md-2" variant="outline-primary">
-      <b-dropdown-item v-for="(item, key) in parentData" :key="key" @click="changeData(item)">
-        {{ item.label }}
-      </b-dropdown-item>
-    </b-dropdown>
-  
-  <Plotly :data="data" :layout="layout" :display-mode-bar="true">
+    <div class="graphcontainer ">
+    <b-row fluid class="d-flex justify-content-between toolbar">
+    <multiselect v-model="showGraph" :options="getMultiSelectOptions()" placeholder="Choose from available graphs" class="multiselector">tt</multiselect>  
 
+    <button class="btn" v-on:click="deleteMe"> <b-icon icon="x" scale="2" variant="danger"></b-icon></button>
+  </b-row>
+  <b-row>
+    <Plotly :data="data" :layout="layout">
   </Plotly>
+</b-row>
+</div>
 </b-col>
-
 </template>
 
 <script>
 import { Plotly } from 'vue-plotly'
+import Multiselect from 'vue-multiselect'
 
 export default {
   name: "Graph",
   components: {
-    Plotly
+    Plotly,
+    Multiselect
   },
   props: {
+    parentID: Number,
     parentData: Array,
   },
   data: () => ({
@@ -36,14 +40,43 @@ export default {
                        font : {family: 'helvetica, arial'}}
                        },
       count: 0,
-      fields: []
+      fields: [],
+      value: null,
+      options:  ['list', 'of', 'options']      
     }),
-  methods: {
+    computed: {
+      showGraph: {
+      get(){return this.value},
+      set(selectedVal){
+        this.value=selectedVal;
+        for (let item in this.parentData) {
+          if (this.parentData[item].title == selectedVal){
+            this.changeData(this.parentData[item])
+          }
+        }
+      }
+    },
+  },
+    methods: {
+    getMultiSelectOptions(){
+      let array = [];
+      for (let item in this.parentData) {
+        array.push(this.parentData[item].title)
+      }
+      return array
+    },
+    deleteMe(){
+        console.log('emitting from graphy')
+        this.$emit('graphToParent', this.parentID)
+    },
     changeData(item) {
-
-      this.data[0].x = item.x
-      this.data[0].y = item.y
-      this.layout = {title: item.label}
+      
+      this.data = item.data
+      this.layout = {title: item.title,
+                     xaxis: {title: item.xlabel,
+                             linewidth: 4},
+                     yaxis: {title: item.ylabel,
+                             linewidth: 4}}
 
     }
   }
@@ -51,10 +84,40 @@ export default {
 
 </script>
 
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
 <style>
 
+.toolbar{
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.btn {
+  background-color: DodgerBlue; /* Blue background */
+  border: none; /* Remove borders */
+  color: white; /* White text */
+  padding: 12px 16px; /* Some padding */
+  font-size: 16px; /* Set a font size */
+  cursor: pointer; /* Mouse pointer on hover */
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: RoyalBlue;
+}
+
+
+.redborder{
+  border: 1px solid red;
+}
+
 .graphcontainer{
-  width: 100px;
+  min-width: 600px;
+}
+
+.multiselector{
+  width: 400px;
 }
 
 .logos_footer {

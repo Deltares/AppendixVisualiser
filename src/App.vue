@@ -48,7 +48,7 @@ img {
 }
 
 b-navbar{
-    background-color: red;
+    background-color: white;
 
 }
 
