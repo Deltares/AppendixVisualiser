@@ -1,7 +1,6 @@
 <template>
   <div class="container-fluid">
     <div class="row d-flex justify-content-center header align-items-center">
-      <h1>Appendix 1</h1>
     </div>
     <div class="row d-flex align-content-right author align-items-center">
       Reference: {{reference}} | Contact: {{contact}}
@@ -12,7 +11,7 @@
     <div v-else>
       <div class="row justify-content-center">
         <div>
-          <h2>{{paragraphHeader}}</h2>
+          <h1>{{paragraphHeader}}</h1>
           <p class="textRow" v-html="paragraphText"></p>
         </div>
       </div>
@@ -133,9 +132,23 @@ export default {
   border: 0px solid blue;
 }
 
+h1 {
+  color: #0927a2ff;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 18px;
+}
+
 h2 {
   color: #0927a2ff;
   font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+
+h3 {
+  color: black;
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  font-size: 12px;
 }
 
 .logos_footer {

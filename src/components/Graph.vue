@@ -37,8 +37,9 @@ export default {
                xaxis: {title: "x Axis", 
                        linecolor: "#000000",
                        linewidth: 2,
-                       font : {family: 'helvetica, arial'}}
-                       },
+                       font : {family: 'helvetica, arial'}},
+              legend: {bgcolor: "#e5eef2"}
+            },
       count: 0,
       fields: [],
       value: null,
@@ -73,10 +74,14 @@ export default {
       
       this.data = item.data
       this.layout = {title: item.title,
+                     titlefont: {color: '#0927a2ff', 
+                                 family: 'helvetica, arial'},
                      xaxis: {title: item.xlabel,
                              linewidth: 4},
                      yaxis: {title: item.ylabel,
-                             linewidth: 4}}
+                             linewidth: 4},
+                     legend: {bgcolor: "#e5eef2"},
+                     font : {family: 'helvetica, arial', size: 18}}
 
     }
   }

@@ -92,23 +92,25 @@ export default {
 
 
 <style scoped>
+
 h3{
   font-family: Helvetica, Arial, sans-serif;
-  font-size: 20px;
+  font-size: 28px;
+  color: #0927a2ff;
 }
+
 .drop{
   width: 50%;
   height: 100%;
-  background-color: #eee;
+  background-color: #e5eef2;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  padding: 1rem;
+  padding: 10rem;
   transition: background-color .2s ease-in-out;
-
-  font-family: Helvetica, sans-serif;
+  border-radius: 10px;
   
 }
 
@@ -121,11 +123,11 @@ h3{
   align-items: center;
   justify-content: center;
 
-  padding: 1rem;
+  padding: 10rem;
   transition: background-color .2s ease-in-out;
 
   font-family: Helvetica, sans-serif;
-  border: 1px solid red;
+  border: 3px solid #0927a2ff;
 }
 
 textarea{
