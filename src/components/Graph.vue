@@ -1,17 +1,18 @@
 <template>
   <b-col>
-    <div class="graphcontainer ">
-    <b-row fluid class="d-flex justify-content-between toolbar">
-    <multiselect v-model="showGraph" :options="getMultiSelectOptions()" placeholder="Choose from available graphs" class="multiselector">tt</multiselect>  
-    <button class="btn sizegraphbtn" v-on:click="toggleSize"> <b-icon icon="arrows-angle-expand" scale="1"></b-icon></button>
-    <button class="btn deletegraphbtn" v-on:click="deleteMe"> <b-icon icon="x" scale="2" variant="danger"></b-icon></button>
-  </b-row>
-  <b-row>
-    <Plotly :data="data" :layout="layout">
-  </Plotly>
-</b-row>
-</div>
-</b-col>
+    <div :style="graphStyle" class='graphContainer blackborder'>
+      <b-row class="d-flex justify-content-between toolbar">
+        <multiselect v-model="showGraph" :options="getMultiSelectOptions()" placeholder="Choose from available graphs" class="multiselector">tt</multiselect>  
+        <span>
+        <button class="btn sizegraphbtn" v-on:click="toggleSize"> <b-icon icon="arrows-angle-expand" scale="1"></b-icon></button>
+        <button class="btn deletegraphbtn" v-on:click="deleteMe"> <b-icon icon="x" scale="2" variant="danger"></b-icon></button>
+      </span>
+      </b-row>
+      
+        <Plotly :data="data" :layout="layout"></Plotly>
+
+    </div>
+  </b-col>
 </template>
 
 <script>
@@ -43,6 +44,8 @@ export default {
       count: 0,
       fields: [],
       value: null,
+      ToggleGraphStyle: 0,
+      maxgraphwidth: "900px",
       options:  ['list', 'of', 'options']      
     }),
     computed: {
@@ -57,6 +60,25 @@ export default {
         }
       }
     },
+    graphStyle(){
+      if (this.ToggleGraphStyle%2 == 0) {
+        return this.graphDynamicStyle
+      } else {
+        return this.graphFocusStyle
+      }
+    },
+    graphDynamicStyle(){
+      return {
+        '--graph-width': "100%",
+        '--graph-maxwidth': this.maxgraphwidth,
+        '--graph-minwidth': "600px"}
+    },
+    graphFocusStyle(){
+      return {
+        '--graph-width': "100%",
+        '--graph-maxwidth': "1200px",
+        '--graph-minwidth': "1200px"}
+    }
   },
     methods: {
     getMultiSelectOptions(){
@@ -68,7 +90,7 @@ export default {
     },
     deleteMe(){
         console.log('emitting from graphy')
-        this.$emit('graphToParent', this.parentID)
+        this.$emit('graphDelete', this.parentID)
     },
     changeData(item) {
       
@@ -83,6 +105,9 @@ export default {
                      legend: {bgcolor: "#e5eef2"},
                      font : {family: 'helvetica, arial', size: 18}}
 
+    },
+    toggleSize(){
+      this.ToggleGraphStyle ++ 
     }
   }
 }
@@ -94,8 +119,17 @@ export default {
 <style>
 
 .toolbar{
-  padding-left: 40px;
-  padding-right: 40px;
+  padding: 10px 10px 10px 20px;
+  width: 100%;
+  border-radius: 5px;
+  background-color: #e5eef2;
+}
+
+.graphContainer{
+  transition: all ease-in 0.4s;
+  width: var(--graph-width);
+  max-width: var(--graph-maxwidth);
+  min-width: var(--graph-minwidth);
 }
 
 .sizegraphbtn{
@@ -123,10 +157,11 @@ export default {
 .redborder{
   border: 1px solid red;
 }
-
-.graphcontainer{
-  min-width: 600px;
+.blackborder{
+  border: 0px dashed black;
 }
+
+
 
 .multiselector{
   width: 400px;

@@ -19,14 +19,17 @@
       <b-row class="d-flex justify-content-center">
         <b-col id="component-graph" 
                v-for="field in fields" 
-               v-on:graphToParent="onGraphDelete"
+               v-on:graphDelete="onGraphDelete"
+               v-on:graphToggleSize="onGraphDelete"
                v-bind:is="field.type" 
                :key="field.id" 
                :parentData="reportData"
                :parentID="field.id"
-               class='borderclass d-flex justify-content-center'></b-col>
-        <button v-on:click="addGraph" class="addgraphbtn"><b-icon icon="plus-square" scale="2" class="addgraphicon"></b-icon></button>
-
+               class='borderclass d-flex justify-content-center'>
+        </b-col>
+        <b-col class=" borderclass d-flex justify-content-center">
+          <button v-on:click="addGraph" class="addgraphbtn"><b-icon icon="plus-square" scale="2" class="addgraphicon"></b-icon></button>
+        </b-col>
       </b-row>
       <b-row class="d-flex justify-content-center">
         
@@ -111,7 +114,7 @@ export default {
 .addgraphbtn{
   width: 600px;
   height: 400px;
-  background-color: #e5eef2;
+  background-color: transparent;
   border-radius: 10px;
   border: 0px;
   outline: none;
@@ -121,7 +124,7 @@ export default {
 }
 
 .addgraphbtn:hover{
-  background-color: #B2D4E3;
+  background-color: #e5eef2;
 }
 
 .addgraphbtn:focus{
@@ -133,7 +136,7 @@ export default {
 }
 
 .borderclass{
-  border:0px solid red;
+  border:0px dashed red;
 }
 .borderclass2{
   border: 0px solid blue;
