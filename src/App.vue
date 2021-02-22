@@ -2,7 +2,7 @@
 
   <div  id="Main">
     <b-navbar toggleable="lg" sticky type="light" variant="light">
-      <b-navbar-brand href="#"><img src="./assets/logo_deltares.png" alt="DeltaresLogo"></b-navbar-brand>
+      <b-navbar-brand href="#"><img src="./assets/logo_deltares.png" alt="DeltaresLogo" class="logo"></b-navbar-brand>
 <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
@@ -18,7 +18,7 @@
     </b-navbar>
   
     <demoDash/>
-    
+    <img src="./assets/Deltares_pay-off_D-blauw_RGB.svg" alt="DeltaresLogo" class="payoff">
   </div>
 
 </template>
@@ -38,10 +38,17 @@ export default {
 </script>
 
 <style>
-img {
+
+.logo {
   max-width: 150px;
 }
 
+.payoff{
+  position: fixed;
+  right: 20px;
+  bottom: 10px;
+  width: 15%;
+}
 
 #Main {
   font-family: Helvetica, Arial, sans-serif;

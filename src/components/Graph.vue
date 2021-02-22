@@ -3,8 +3,8 @@
     <div class="graphcontainer ">
     <b-row fluid class="d-flex justify-content-between toolbar">
     <multiselect v-model="showGraph" :options="getMultiSelectOptions()" placeholder="Choose from available graphs" class="multiselector">tt</multiselect>  
-
-    <button class="btn" v-on:click="deleteMe"> <b-icon icon="x" scale="2" variant="danger"></b-icon></button>
+    <button class="btn sizegraphbtn" v-on:click="toggleSize"> <b-icon icon="arrows-angle-expand" scale="1"></b-icon></button>
+    <button class="btn deletegraphbtn" v-on:click="deleteMe"> <b-icon icon="x" scale="2" variant="danger"></b-icon></button>
   </b-row>
   <b-row>
     <Plotly :data="data" :layout="layout">
@@ -98,8 +98,15 @@ export default {
   padding-right: 40px;
 }
 
-.btn {
-  background-color: DodgerBlue; /* Blue background */
+.sizegraphbtn{
+  border: none; /* Remove borders */
+  color: black; /* White text */
+  padding: 12px 16px; /* Some padding */
+  font-size: 16px; /* Set a font size */
+  cursor: pointer; /* Mouse pointer on hover */
+}
+
+.deletegraphbtn {
   border: none; /* Remove borders */
   color: white; /* White text */
   padding: 12px 16px; /* Some padding */
@@ -108,8 +115,8 @@ export default {
 }
 
 /* Darker background on mouse-over */
-.btn:hover {
-  background-color: RoyalBlue;
+.deletegraphbtn:hover {
+  border: 1px dashed black;
 }
 
 

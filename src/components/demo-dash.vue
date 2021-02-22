@@ -15,25 +15,8 @@
           <p class="textRow" v-html="paragraphText"></p>
         </div>
       </div>
-      <b-row class="text-center justify-content-center borderclass2">
-        <!--Number of Graphs:{{numberOfGraphs}}-->
-        <!--
-        <div>
-          Set number of graphs
-            <b-form-group type="primary">
-              <b-form-radio-group
-                id="btn-radios-1"
-                v-model="numberOfGraphs"
-                :options="options"
-                buttons
-                name="radios-btn-default"
-                @change.native="setNumberOfGraphs('Graph')"
-              ></b-form-radio-group>
-            </b-form-group>
-          </div>-->
-      </b-row>
       <b-container fluid>
-      <b-row class="borderclass2">
+      <b-row class="d-flex justify-content-center">
         <b-col id="component-graph" 
                v-for="field in fields" 
                v-on:graphToParent="onGraphDelete"
@@ -42,10 +25,11 @@
                :parentData="reportData"
                :parentID="field.id"
                class='borderclass d-flex justify-content-center'></b-col>
+        <button v-on:click="addGraph" class="addgraphbtn"><b-icon icon="plus-square" scale="2" class="addgraphicon"></b-icon></button>
 
       </b-row>
-      <b-row class="borderclass2 d-flex justify-content-center">
-        <button v-on:click="addGraph">Add graph</button>
+      <b-row class="d-flex justify-content-center">
+        
       </b-row>
     </b-container>
 
@@ -124,9 +108,32 @@ export default {
 </script>
 
 <style>
+.addgraphbtn{
+  width: 600px;
+  height: 400px;
+  background-color: #e5eef2;
+  border-radius: 10px;
+  border: 0px;
+  outline: none;
+  transition-timing-function: ease-out;
+  transition: 0.4s;
+  border: 2px dashed #0927a2ff;
+}
+
+.addgraphbtn:hover{
+  background-color: #B2D4E3;
+}
+
+.addgraphbtn:focus{
+  outline: none;
+}
+
+.addgraphicon{
+  color: #0927a2ff;
+}
 
 .borderclass{
-  border: 0px solid red;
+  border:0px solid red;
 }
 .borderclass2{
   border: 0px solid blue;
@@ -135,20 +142,17 @@ export default {
 h1 {
   color: #0927a2ff;
   font-family: Helvetica, Arial, sans-serif;
-  font-size: 18px;
 }
 
 h2 {
   color: #0927a2ff;
   font-family: Helvetica, Arial, sans-serif;
-  font-size: 14px;
 }
 
 h3 {
   color: black;
   font-family: Helvetica, Arial, sans-serif;
   font-weight: bold;
-  font-size: 12px;
 }
 
 .logos_footer {
