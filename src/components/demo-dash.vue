@@ -120,7 +120,7 @@ export default {
   outline: none;
   transition-timing-function: ease-out;
   transition: 0.4s;
-  border: 2px dashed #0927a2ff;
+  border: 2px dashed #0927a2;
 }
 
 .addgraphbtn:hover{
