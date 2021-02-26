@@ -99,9 +99,11 @@ export default {
                      titlefont: {color: '#0927a2ff', 
                                  family: 'helvetica, arial'},
                      xaxis: {title: item.xlabel,
-                             linewidth: 4},
+                             linewidth: 4,
+                             range: item.xlim},
                      yaxis: {title: item.ylabel,
-                             linewidth: 4},
+                             linewidth: 4,
+                             range:item.ylim},
                      legend: {bgcolor: "#e5eef2"},
                      font : {family: 'helvetica, arial', size: 18}}
 
