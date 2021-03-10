@@ -126,11 +126,9 @@ sample text
                         ydata = [np.float64(y) for y in ydata]
 
                     
-                    appendix_dict.get('graphs')[-1].get('data').append(
-                        {'x': list(xdata),
+                    datadict = {'x': list(xdata),
                         'y': list(ydata),
                         "mode": mode,
-                        "name": line.get_label(),
                         "line": {"color": f"rgb{mplcolors.to_rgb(color)}", 
                                 "dash": dash,
                                 "width": line.get_linewidth()*1},
@@ -140,7 +138,13 @@ sample text
                                     "line": {'color': mplcolors.to_rgb(line.get_markeredgecolor()),
                                              'width': line.get_markeredgewidth()}
                         }}
-                    )
+                    label =  line.get_label()
+                    if label[0] != "_":
+                        datadict["name"] = label
+                        datadict["showlegend"] = True
+                    else:
+                        datadict["showlegend"] = False
+                    appendix_dict.get('graphs')[-1].get('data').append(datadict)
                 for text in ax.texts:
 
                     appendix_dict.get('graphs')[-1].get('data').append(
