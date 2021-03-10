@@ -3,7 +3,7 @@
     <div class="row d-flex justify-content-center header align-items-center">
     </div>
     <div class="row d-flex align-content-right author align-items-center">
-      Reference: {{reference}} | Contact: {{contact}}
+      Foto: Beeldbank Rijkswaterstaat
     </div>
     <div v-if="NoFile">
       <DropFile v-on:childToParent="onChildClick"></DropFile>
@@ -11,8 +11,11 @@
     <div v-else>
       <div class="row justify-content-center">
         <div>
-          <h1>{{paragraphHeader}}</h1>
-          <p class="textRow" v-html="paragraphText"></p>
+          <VueShowdown
+                    :markdown="paragraphText"
+                    flavor="github"
+                    :options="{ emoji: true }"
+                  />
         </div>
       </div>
       <b-container fluid>
@@ -45,11 +48,13 @@
 import Graph from '../components/Graph';
 import DropFile from '../components/DropFile'  
 import Multiselect from 'vue-multiselect'
+import { VueShowdown } from 'vue-showdown';
+//import $ from 'jquery'
 
 export default {
   name: 'demoDash',
   components: {
-    Graph, DropFile, Multiselect
+    Graph, DropFile, Multiselect, VueShowdown
   },
   data: () => ({
     NoFile: true,
@@ -68,7 +73,9 @@ export default {
     paragraphHeader: String,
     paragraphText: String,
     reportData: Array,
+    textSource: String,
   }),
+  
   methods: {
     setNumberOfGraphs(type) {
       if (this.count < this.numberOfGraphs) {
@@ -88,8 +95,8 @@ export default {
         this.NoFile = false
         this.reference = data.reference
         this.contact = data.contact
-        this.paragraphHeader = data.appendices[0].paragraphs[0].header
-        this.paragraphText = data.appendices[0].paragraphs[0].body
+        //this.paragraphHeader = data.appendices[0].paragraphs[0].header
+        this.paragraphText = data.appendices[0].paragraphs
         this.reportData = data.appendices[0].graphs
       },
       onGraphDelete (data) {
@@ -102,8 +109,16 @@ export default {
         this.fields.push({
         'type': "Graph",
         id: this.count++})
+    },
+    paragraphServer(){
+      return this.paragraphText
     }
+    },
+    mounted(){
+    if (this.$route.path == "/datafile"){
+      console.log(this.$route.query.path)
     }
+  }
 }
 
 
@@ -167,7 +182,7 @@ h3 {
 }
 
 .header {
-  background-color: red;
+  background-color: white;
   background-image: url(../assets/header.png);
   height: 200px;
   color: white;

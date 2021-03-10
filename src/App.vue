@@ -22,8 +22,8 @@
       </b-modal>
       </b-collapse>
     </b-navbar>
-  
     <demoDash/>
+    
 
   
     <img src="./assets/Deltares_pay-off_D-blauw_RGB.svg" alt="DeltaresLogo" class="payoff">
@@ -35,10 +35,14 @@
 import demoDash from './components/demo-dash.vue';
 
 
+
 export default {
     name: 'App',
     components: {
-       demoDash,
+       demoDash
+    },
+    mounted(){
+      console.log(this.$route)
     }
 }
 

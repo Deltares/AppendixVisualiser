@@ -11,14 +11,27 @@ from pathlib import Path
 from copy  import copy
 
 
+
 class ExportToAV:
+    linestyle_map = {"-": "solid", 
+                     "-.": "dashdot", 
+                     '--': "dash",
+                     ":": "dot"}
+
+    marker_map = {"o": "circle",
+                  "s": "square",
+                  "v": "triangle-down",
+                  "^": "triangle-up",
+                  "<": "triangle-left",
+                  ">": "triangle-right",
+                  "1": "y-down"}
 
     def __init__(self, figures:list=None):
         self._output_dict = {"reference":"Add reference to report",
                              "contact":"koen.berends@deltares.nl",
                              "appendices":[]}
 
-        self.addAppendix()
+        self.addAppendix(name="appendix")
         if figures is not None:
             self.addFiguresToAppendix(figures, 0)
 
@@ -26,10 +39,21 @@ class ExportToAV:
         with open(path, 'w') as f:
             json.dump(self._output_dict, f, indent=2)
 
-    def addAppendix(self):
-        paragraph_dict = {"header": "Header 1", "body": r"This body support HTML tags, like <b>bold</b>, <i>italics</i>,  <a href='https://ncr-web.org'>links </a> and more. <br/> <h2> Header 2 </h2> Use it to explain the figures accessible below.  "}
-        appendix_dict = {"paragraphs":list(), "graphs":list()}
-        appendix_dict.get('paragraphs').append(paragraph_dict)
+    def addAppendix(self, name:str="appendix", paragraph:str=None):
+        if paragraph is None:
+            paragraph = r"""# About
+Use this section to describe the figures or tables in this appendix. 
+This section supports markdown code, like **bold text**,  *italicized text*,
+    > blockquote
+and more
+## header 2
+sample text
+### header 3
+sample text
+"""
+
+        appendix_dict = {"name": name, "paragraphs":list(), "graphs":list()}
+        appendix_dict['paragraphs'] = paragraph
         self._output_dict.get('appendices').append(appendix_dict)
 
     def getAppendix(self, index):
@@ -38,7 +62,19 @@ class ExportToAV:
     def setAppendix(self, index, appendix_dict):
         self._output_dict.get('appendices')[index] = appendix_dict
 
-    def addFiguresToAppendix(self, figs, appendix=0):
+    def setParagraph(self, markdown:str, appendix_index:int=0):
+        """
+        Add a paragraph (description) to an appendix. 
+
+        markdown: str with markdown markup
+
+        """
+        self._output_dict.get('appendices')[appendix_index]['paragraphs'] = paragraph
+
+    def addFiguresToAppendix(self, figs, appendix:Union[int, str]=0):
+        if isinstance(appendix, str):
+            appendix = self._get_appendix_index_by_name(appendix)
+
         appendix_dict = self.getAppendix(appendix)
         for fig in figs:
             for ax in fig.axes:
@@ -56,24 +92,21 @@ class ExportToAV:
                         )
                 for line in ax.lines:
                     color = line.get_color()
+                    mode = self._get_mode(line)
                     
-                    if line.get_marker() is None:
-                        mode = "lines"
-                    elif (line.get_marker() is not None) and (line.get_linestyle() is not None):
-                        mode = "lines+markers"
-                    else:
-                        mode = "markers"
-                    linestyles = {"-": "solid", 
-                                  "-.": "dashdot", 
-                                  '--': "dash",
-                                  ":": "dot"}
+                    
                     try:
-
-                        dash = linestyles.get(line.get_linestyle())
+                        dash = self.linestyle_map.get(line.get_linestyle())
                     except KeyError:
                         print (f"linestyle {dash} not supported")
                         dash = "solid"
                     
+                    try:
+                        marker_symbol = self.marker_map.get(line.get_marker())
+                    except KeyError:
+                        print (f"marker symbol {marker_symbol} not supported")
+                        dash = "circle"
+
                     # Get xy data
                     xdata = line.get_xdata()
                     ydata = line.get_ydata()
@@ -95,16 +128,53 @@ class ExportToAV:
                     appendix_dict.get('graphs')[-1].get('data').append(
                         {'x': list(xdata),
                         'y': list(ydata),
-                        "mode": "lines",
+                        "mode": mode,
                         "name": line.get_label(),
                         "line": {"color": f"rgb{mplcolors.to_rgb(color)}", 
                                 "dash": dash,
-                                "width": line.get_linewidth()*1}
+                                "width": line.get_linewidth()*1},
+                        "marker" :  {"symbol": marker_symbol,
+                                    "color": mplcolors.to_rgb(line.get_markerfacecolor()),
+                                    "size": line.get_markersize(),
+                                    "line": {'color': mplcolors.to_rgb(line.get_markeredgecolor()),
+                                             'width': line.get_markeredgewidth()}
+                        }}
+                    )
+                for text in ax.texts:
+
+                    appendix_dict.get('graphs')[-1].get('data').append(
+                        {'x': [text._x],
+                         'y': [text._y],
+                         "mode": "text",
+                         "text": [text._text],
+                         "textposition": self._get_textposition(text),
+                         "textfont": {"color": f"rgb{mplcolors.to_rgb(text._color)}"}
                         }
                     )
                 
         
         self.setAppendix(appendix, appendix_dict)
+
+    def _get_textposition(self, textobject):
+        th = textobject._horizontalalignment
+        tv = textobject._verticalalignment
+
+        alignment_map = {"baseline": "bottom",
+                         "top": "top",
+                         "left": "left",
+                         "right": "right",
+                         "bottom": "bottom",
+                         "center": "center"
+                        }
+        return f"{alignment_map[th]} {alignment_map[tv]}"
+
+    def _get_mode(self, line):
+        if line.get_marker() is 'None':
+            return "lines"
+        elif (line.get_marker() is not 'None') and (line.get_linestyle() is not 'None'):
+            return "lines+markers"
+        else:
+            return "markers"
 
     def _ax_is_datetime(self, ax):
         for line in ax.lines:
@@ -133,7 +203,13 @@ class ExportToAV:
             return np.array(transfdata)
         return xdata, ydata
 
-
+    def _get_appendix_index_by_name(self, appendixname):
+        for i, ap in enumerate(self._output_dict.get("appendices")):
+            if ap['name'] == appendixname:
+                return i
+        
+        # if not returned by now, appendix is unknown
+        raise IndexError(f"unknown appendix '{appendixname}'")
 # Tests 
 if __name__ == "__main__":
     """
@@ -197,7 +273,7 @@ if __name__ == "__main__":
 
     figs.append(fig)
 
-    # TEST CASE 4: AXHLINE
+    # TEST CASE 5: AXHLINE
     # ------------------------------------
     fig, ax = plt.subplots(1)
     start_t = datetime(year=2020, month=1, day=1)
@@ -214,10 +290,44 @@ if __name__ == "__main__":
 
     figs.append(fig)
 
+
+    # TEST CASE 5: Markers
+    # ------------------------------------
+    fig, ax = plt.subplots(1)
+    start_t = datetime(year=2020, month=1, day=1)
+    x = np.linspace(0, 2*np.pi, 10)
+    
+    markers = list(ExportToAV.marker_map.keys())
+    for s, marker in zip(np.linspace(0, np.pi, len(markers)), markers):
+        ax.plot(x, np.sin(x+s), linestyle='None', marker=marker, linewidth=5*s/np.pi, label=marker)
+
+    ax.set_title('Markers')
+
+    figs.append(fig)
+
+    # TEST CASE 6: Annotations
+    # ------------------------------------
+    fig, ax = plt.subplots(1)
+    start_t = datetime(year=2020, month=1, day=1)
+    x = np.linspace(0, 2*np.pi, 10)
+    
+    ax.plot(x, np.sin(x)) # just someline
+
+    ax.text(x[5], np.sin(x)[5], 'Half Way')
+    ax.text(8, 1, 'Out of ax')
+    ax.set_title('Annotations')
+
+    figs.append(fig)
+
+
     # How to Use Export
     # ------------------------------------
 
-    ExportToAV(figs).to_json("ExportToAV.json")
+    # ExportToAV(figs).to_json("ExportToAV.json")
+
+    exporter = ExportToAV()
+    exporter.addAppendix(name="Figures")
+    exporter.addFiguresToAppendix(figs, "Figures")
 
 
 
