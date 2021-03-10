@@ -31,8 +31,9 @@ class ExportToAV:
                              "contact":"koen.berends@deltares.nl",
                              "appendices":[]}
 
-        self.addAppendix(name="appendix")
+        
         if figures is not None:
+            self.addAppendix(name="appendix")
             self.addFiguresToAppendix(figures, 0)
 
     def to_json(self, path:Union[str, Path]):
@@ -328,6 +329,7 @@ if __name__ == "__main__":
     exporter = ExportToAV()
     exporter.addAppendix(name="Figures")
     exporter.addFiguresToAppendix(figs, "Figures")
+    exporter.to_json("ExportToAV.json")
 
 
 
